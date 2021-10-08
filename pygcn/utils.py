@@ -21,6 +21,8 @@ def load_data(path="../data/cora/", dataset="cora"):
     features = sp.csr_matrix(idx_features_labels[:, 1:-1], dtype=np.float32)
     labels = encode_onehot(idx_features_labels[:, -1])
 
+    datalen = len(labels)
+
     # build graph
     idx = np.array(idx_features_labels[:, 0], dtype=np.int32)
     idx_map = {j: i for i, j in enumerate(idx)}
@@ -38,9 +40,9 @@ def load_data(path="../data/cora/", dataset="cora"):
     features = normalize(features)
     adj = normalize(adj + sp.eye(adj.shape[0]))
 
-    idx_train = range(140)
-    idx_val = range(200, 500)
-    idx_test = range(500, 1500)
+    idx_train = range(int(0.6 * datalen))
+    idx_val = range(int(0.6 * datalen), int(0.8 * datalen))
+    idx_test = range(int(0.8 * datalen), datalen)
 
     features = torch.FloatTensor(np.array(features.todense()))
     labels = torch.LongTensor(np.where(labels)[1])
